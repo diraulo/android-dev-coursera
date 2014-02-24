@@ -1,6 +1,7 @@
 package course.labs.fragmentslab;
 
 import android.app.Activity;
+import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.util.Log;
@@ -22,31 +23,31 @@ public class MainActivity extends Activity implements
 		// and add it to the Activity
 
 		if (!isInTwoPaneMode()) {
-			
 			mFriendsFragment = new FriendsFragment();
-
+			
 			//TODO 1 - add the FriendsFragment to the fragment_container
+			FragmentManager fragmentContainer = getFragmentManager();
+			FragmentTransaction fragmentTransaction = fragmentContainer.beginTransaction();
+			fragmentTransaction.add(R.id.fragment_container, mFriendsFragment);
+			fragmentTransaction.commit();
 			
-			
-			
-
 		} else {
-
+			mFriendsFragment = new FriendsFragment();
 			// Otherwise, save a reference to the FeedFragment for later use
-
 			mFeedFragment = (FeedFragment) getFragmentManager()
 					.findFragmentById(R.id.feed_frag);
+			FragmentManager fragmentContainer = getFragmentManager();
+			FragmentTransaction fragmentTransaction = fragmentContainer.beginTransaction();
+			fragmentTransaction.add(R.id.friends_frag, mFriendsFragment);	
+			fragmentTransaction.commit();
 		}
 
 	}
 
 	// If there is no fragment_container ID, then the application is in
 	// two-pane mode
-
 	private boolean isInTwoPaneMode() {
-
 		return findViewById(R.id.fragment_container) == null;
-	
 	}
 
 	// Display selected Twitter feed
@@ -63,20 +64,19 @@ public class MainActivity extends Activity implements
 		// If in single-pane mode, replace single visible Fragment
 
 		if (!isInTwoPaneMode()) {
-
 			//TODO 2 - replace the fragment_container with the FeedFragment
+			FragmentManager fragmentContainer = getFragmentManager();
+			FragmentTransaction fragmentTransaction = fragmentContainer.beginTransaction();
+			fragmentTransaction.replace(R.id.fragment_container, mFeedFragment);	
+			fragmentTransaction.addToBackStack(null);
+			fragmentTransaction.commit();
 			
-
-			
-
 			// execute transaction now
 			getFragmentManager().executePendingTransactions();
 
 		}
-
 		// Update Twitter feed display on FriendFragment
 		mFeedFragment.updateFeedDisplay(position);
-
 	}
 
 }
